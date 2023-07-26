@@ -1,0 +1,6 @@
+# Generate gitignore file to node project
+node_modules
+downloads
+```
+package-lock.json
+```
