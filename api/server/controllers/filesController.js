@@ -20,6 +20,7 @@ const folderPath = `./${folderName}`;
 // Set URL and custom header
 const url = `${getConfigProvider().url}`;
 const customHeader = {
+    //TODO Check using of env file to save secret key
     'authorization': `Bearer aSuperSecretKey`,
 };
 
