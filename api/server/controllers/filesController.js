@@ -13,6 +13,10 @@ const getConfigProvider = () => {
     }
 }
 
+// Set base path to save files;
+const folderName = 'downloads';
+const folderPath = `./${folderName}`;
+
 // Set URL and custom header
 const url = `${getConfigProvider().url}`;
 const customHeader = {
@@ -25,7 +29,7 @@ const getFilesList = async (req, res, next) => {
     // Validate response
     if (!filesList) {
         return res.status(404).send({
-            success: 'false',
+            success: false,
             message: 'File not found',
         });
     }
@@ -38,10 +42,24 @@ const getFilesList = async (req, res, next) => {
 // Create async function to get file by name
 const getFileByName = async (req, res, next) => {
     const fileName = req.params.fileName;
-    return res.status(200).send({
-        success: 'true',
-        data: fileName,
-    });
+    const fileData = await downloadFile(`${url}${getConfigProvider().actions.file.path}/${fileName}`, fileName);
+    let jsonFormat = null
+    if (fileData) {
+        jsonFormat = await csvToJson(fileData)
+        console.log(jsonFormat);
+        return res.status(200).send({
+            success: true,
+            file: fileName,
+            lines: JSON.parse(jsonFormat),
+        });
+    }
+    else {
+        return res.status(404).send({
+            success: false,
+            file: fileName,
+            message: 'File not found',
+        });
+    }
 }
 
 // Create async function to get files list
@@ -50,13 +68,13 @@ const getDataFiles = async (req, res, next) => {
     // Validate filesList
     if (!filesList) {
         return await res.status(400).send({
-            success: 'false',
+            success: false,
             data: 'No files found',
         });
     }
     const getFileData = await generateFilesFromData(filesList);
     return await res.status(200).send({
-        success: 'true',
+        success: true,
         data: getFileData,
     });
 };
@@ -69,7 +87,7 @@ const generateFilesFromData = async (filesList) => {
         filesList.files.map(async (fileName) => {
             if (!fileName) {
                 return res.status(404).send({
-                    success: 'false',
+                    success: false,
                     message: 'File not found',
                 });
             } else {
@@ -90,8 +108,6 @@ const generateFilesFromData = async (filesList) => {
 
 // Download file using fetch
 const downloadFile = async (url, fileName) => {
-    const folderName = 'downloads';
-    const folderPath = `./${folderName}`;
     const res = await fetch(url, {
         headers: customHeader
     });
