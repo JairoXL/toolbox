@@ -1,7 +1,9 @@
 'use client';
-import Image from 'next/image'
+import React from 'react'
 import styles from './page.module.css'
-import BaseData from './base-data';
+import { Provider } from 'react-redux'
+import store from './store';
+import { DataList } from './components/DataList';
 
 export default function Home() {
   return (
@@ -12,16 +14,11 @@ export default function Home() {
         </div>
       </div>
       <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
+          <Provider store={store}>
+              <DataList />
+          </Provider>
+        <h2>Container</h2>
       </div>
-      <BaseData></BaseData>
     </main>
   )
 }
