@@ -1,8 +1,8 @@
-#Base project for the toolbox project
+# Base project for the toolbox project
 <p>This project is a collection of tools that can be used in other projects</p>
 <p>It is a maven project, so it can be used as a dependency in other projects</p>
 
-##How to use
+## How to use
 <p>First, you need to install the project in your local maven repository</p>
 
 ### Install API
