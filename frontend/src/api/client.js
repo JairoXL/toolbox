@@ -2,7 +2,6 @@ export async function client(endpoint, { body, ...customConfig } = {}) {
     const headers = { 'Content-Type': 'application/json' }
 
     const config = {
-        mode: 'no-cors',
         method: body ? 'POST' : 'GET',
         ...customConfig,
         headers: {
@@ -20,7 +19,6 @@ export async function client(endpoint, { body, ...customConfig } = {}) {
         const response = await window.fetch(endpoint, config)
         data = await response.json()
         if (response.ok) {
-            // Return a result object similar to Axios
             return {
                 status: response.status,
                 data,
@@ -36,8 +34,4 @@ export async function client(endpoint, { body, ...customConfig } = {}) {
 
 client.get = function (endpoint, customConfig = {}) {
     return client(endpoint, { ...customConfig, method: 'GET' })
-}
-
-client.post = function (endpoint, body, customConfig = {}) {
-    return client(endpoint, { ...customConfig, body })
 }

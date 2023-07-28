@@ -1,8 +1,8 @@
 'use client';
 import React from 'react'
 import styles from './page.module.css'
+import { store } from './store';
 import { Provider } from 'react-redux'
-import store from './store';
 import { DataList } from './components/DataList';
 
 export default function Home() {
@@ -17,7 +17,6 @@ export default function Home() {
           <Provider store={store}>
               <DataList />
           </Provider>
-        <h2>Container</h2>
       </div>
     </main>
   )

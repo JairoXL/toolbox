@@ -3,7 +3,7 @@ import { client } from './client';
 const API_URL = 'http://localhost:3000/api/files';
 
 export async function getTableData() {
-    return await client.get(`${API_URL}/list`);
+    return await client.get(`${API_URL}/data`);
 }
 
 export async function getTableByFile(file) {
