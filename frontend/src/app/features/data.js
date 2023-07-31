@@ -1,39 +1,37 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { getTableData } from '../../api/server';
 
-export const getTableFiles = createAsyncThunk(
-    'data/getTableData',
-    async (dispatch, getState) => {
-        return await getTableData().then(
-            (response) => {
-                dispatch(dataSlice.actions.getTable(response.data.data));
-                console.log('response', response.data.data);
-                return response.data.data;
-            });
-    });
+export const fetchTableFiles = createAsyncThunk('table/getTableFiles', async () => {
+    const response = await getTableData();
+    return response.data;
+});
 
-const dataSlice = createSlice({
-    name: 'data',
-    initialState: [],
-    reducers: {
-        getTable(data, action) {
-            console.log('data', data);
-            console.log('action', action);
-            return <div>STATUS</div>
-        },
-        [getTableFiles.pending]: (state, action) => {
-            state.status = "loading";
-        },
-        [getTableFiles.fulfilled]: (state, action) => {
-            state.status = 'success';
-            state = action.payload;
-        },
-        [getTableFiles.rejected]: (state, action) => {
-            state.status = "failed";
-        }
+export const dataSlice = createSlice({
+    name: 'table',
+    initialState: {
+        tableFiles: {},
+        loading: 'idle',
     },
+    extraReducers: (builder ) => {
+        builder
+            .addCase(fetchTableFiles.pending, (state, action) => {
+                state.loading = 'loading';
+            })
+            .addCase(fetchTableFiles.fulfilled, (state, action) => {
+                state.loading = 'success';
+                state.tableFiles = action.payload;
+            })
+            .addCase(fetchTableFiles.rejected, (state, action) => {
+                state.loading = 'failed';
+                state.tableFiles = action.payload;
+            })
+    },
+    reducers: {
+        getTableState(state, action) {
+            return state;
+        },
+    }
 });
 
 const { actions, reducer } = dataSlice;
-export const { getTable } = actions;
-export default dataSlice.reducer;
+export default reducer;
