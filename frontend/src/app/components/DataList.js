@@ -75,7 +75,8 @@ const DataList = () => {
             <div className="table-title">
                 <h3>Challenge toolbox</h3>
             </div>
-            <Table>
+            { !rawData.success && <div className="loader"></div> }
+            <Table striped bordered hover>
                 <thead>
                     <tr>{renderTableHeader()}</tr>
                 </thead>
