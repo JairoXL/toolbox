@@ -1,17 +1,17 @@
 import React, { useEffect } from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { fetchTableFiles } from '../features/data';
 import { Table } from 'react-bootstrap';
 
 const DataList = () => {
 
     const dispatch = useDispatch();
+    const rawData = useSelector(state => state.tableData.tableFiles);
+    const headerRender=['FileName'];
 
     useEffect( ()=> {
         dispatch(fetchTableFiles());
     }, [dispatch]);
-
-    const rawData = useSelector(state => state.tableData.tableFiles);
 
     function generateTableItems(data) {
         const objTable = [];
@@ -28,6 +28,7 @@ const DataList = () => {
     }
 
     function renderTableData() {
+        if(!rawData) return (<tr></tr>);
         const { data } = rawData;
         const tableData = generateTableItems(data);
 
@@ -45,7 +46,6 @@ const DataList = () => {
     }
 
     function getHeaderItems(data) {
-        let headerRender=['FileName'];
         data.map((item) => {
             if(item.lines.length){
                 item.lines.map(data => {
@@ -61,6 +61,7 @@ const DataList = () => {
     }
 
     function renderTableHeader() {
+        if(!rawData) return (<th></th>);
         const { data } = rawData;
         if(rawData.success === true && data.length > 0) {
             const header = getHeaderItems(data);
@@ -75,7 +76,9 @@ const DataList = () => {
             <div className="table-title">
                 <h3>Challenge toolbox</h3>
             </div>
-            { !rawData.success && <div className="loader"></div> }
+            { rawData && rawData.success === false && <div className="error">Error: {rawData.message}</div> }
+            { rawData && rawData.success === true && rawData.data.length === 0 && <div className="error">No data found</div>}
+            { rawData && rawData.success === true && rawData.data.length > 0 ?
             <Table striped bordered hover>
                 <thead>
                     <tr>{renderTableHeader()}</tr>
@@ -83,7 +86,7 @@ const DataList = () => {
                 <tbody>
                     {renderTableData()}
                 </tbody>
-            </Table>
+            </Table> : <div className="loader"></div>}
         </div>
     );
 }
